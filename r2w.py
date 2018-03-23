@@ -1,24 +1,23 @@
-from bs4 import BeautifulSoup
-import requests
-import protectedInfo
-import athlete
-# import mechanicalsoup
-# import sys
-
-
-USERNAME = 'spkane31'
-PASSWORD = '08211996'
+# Code written by Sean P. Kane
+# Contact information kanesp@mail.uc.edu
+# Code written in collaboration with Jake Carlson
+# Jake put your e-mail here
 
 # Borrowing ideas, code, and organization from loisaidasam on Github
 # stravalib-scraper
 
+from bs4 import BeautifulSoup
+import requests
+import protectedInfo
+import athlete
+
+USERNAME = 'spkane31'
+PASSWORD = '08211996'
 
 BASE_URL = 'http://running2win.com/'
 
 MEMBER_PROFILE = 'http://www.running2win.com/community/view-member-profile.asp?vu=Spkane31'
 MEMBER_RACES = 'http://www.running2win.com/community/AllUserRacesNew.asp?k=0&vu=Spkane31'
-
-
 
 class r2wScraper(object):
     BASE_URL = 'http://running2win.com/'
@@ -31,7 +30,8 @@ class r2wScraper(object):
         self.password = PASSWORD
         self.session = requests.Session
 
-
+# -----------------------------------------------------------------------------------------------------------------------------------
+# Main method to login to R2w
 def main():
     s = requests.session()
 
@@ -42,12 +42,48 @@ def main():
         'chkRememberMe': 0,
         'btnLogin': 'Login'
     })
-    r = s.get('http://running2win.com/community/view-member-running-log.asp')
-    # return r
-    r2wScrape(r)    
-    # print(r.status_code) # A status code of 200 indicates the page was downloaded correctly
 
-def r2wScrape(r):
+    # Below link will scrape the users Running Log and return all runs displayed in format ['mileage', 'distance', 'pace']
+    r = s.get('http://www.running2win.com/community/view-member-running-log.asp')
+
+    # Below is the link to the my Running2Win User Information page
+    # r = s.get('http://www.running2win.com/community/view-member-profile.asp?vu=Spkane31')
+
+
+    r2wScrapeUserInfo(r)    
+    # print(r.status_code) # A status code of 200 indicates the page was downloaded correctly (used for debugging purposes, probably can delete)
+
+# -----------------------------------------------------------------------------------------------------------------------------------
+# Scrape Home Page for Lifetime (Logged) Mileage
+def r2wScrapeUserInfo(r):
+
+    soup = BeautifulSoup(r.content, 'html.parser')
+
+    details = soup.find_all('select')
+
+    mileage = [d.get_text() for d in details]
+
+    data = mileage[1]
+
+    data = data.split('\n')
+
+    totalMiles = 0
+    for d in data[1:len(data)-1]:
+        d = d.split(' - ')
+        milesColumn = d[2]
+        milesFloat = []
+        for m in milesColumn:
+            if m in '0123456789.':
+                milesFloat.append(m)
+        totalMiles += (list_to_dec(milesFloat))
+    print(totalMiles)
+    return(totalMiles)
+
+  
+
+# -----------------------------------------------------------------------------------------------------------------------------------
+# Scrape users running log page for all runs, distance, and paces
+def r2wScrapeRunningLog(r):
 
     soup = BeautifulSoup(r.content, 'html.parser')
 
@@ -69,5 +105,27 @@ def r2wScrape(r):
             Data.append(newRow)
     print(Data)
 
+
+# ---------------------------------------------------------------
+# This function would take a list, ['1', '2', '3', '.', '4'] and return 123.4 in a float
+def list_to_dec(lst):
+    result = 0
+
+    # Loop counts how many numbers are to the right of the decimal point
+    for i in range(0, len(lst)):
+        if lst[i] == '.':
+            decimals = len(lst) - i
+            break
+
+    # Loop creates an integer that has all the numbers added to the end
+    for l in lst:
+        if l != '.':
+            result += int(l)
+            result = result * 10
+
+    return result/(10 ** (decimals))
+
+# -----------------------------------------------------------------------------------------------------------------------------------
+# Main method
 if __name__ == '__main__':
     main()

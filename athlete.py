@@ -1,27 +1,32 @@
+# Code written by Sean P. Kane
+# Contact information kanesp@mail.uc.edu
+# Code written in collaboration with Jake Carlson
+# Jake put your e-mail here
 import numpy as np
 mileage = []
 fiveK = []
 
-def toSeconds(lst):
+# def toSeconds(lst):
     
-    hour, minutes, sec = 0, 0, 0
-    times = []
-    for r in lst:
-        r = r.split(":")
-        if len(r) == 3:
-            hour, minutes, sec = float(r[0]), float(r[1]), float(r[2])
-        if len(r) == 2 and r[0] != '':
-            minutes, sec = float(r[0]), float(r[1])
-        if len(r) == 1:
-            sec = float(r[0])
-        if r[0] == '' and r[1] != '':
-            sec = float(r[1])
+#     hour, minutes, sec = 0, 0, 0
+#     times = []
+#     for r in lst:
+#         r = r.split(":")
+#         if len(r) == 3:
+#             hour, minutes, sec = float(r[0]), float(r[1]), float(r[2])
+#         if len(r) == 2 and r[0] != '':
+#             minutes, sec = float(r[0]), float(r[1])
+#         if len(r) == 1:
+#             sec = float(r[0])
+#         if r[0] == '' and r[1] != '':
+#             sec = float(r[1])
         
 
-        times.append(hour * 3600 + min * 60 + sec)
-    return(times)
+#         # times.append(hour * 3600 + min * 60 + sec)
+#     return(times)
        
-
+# -----------------------------------------------------------------------------------------------------------------------------------
+# Class for an athlete after information is scraped from their pages
 class athlete():
 
     def __init__(self, name, gender, totalMiles, PRs = [] * 6,  age = 0):
@@ -58,10 +63,10 @@ def addToData(a):
         fiveK.append(a.PRs[3])
 
 
-spkane31 = athlete('spkane31', 'Male', 16000, toSeconds(['54.0', '1:59.2', '4:31', '15:52', '1:12:50', '2:32:26']), 21)
-evan = athlete('evansergent', 'Male', 159.18 + 2992.52 + 3273.65 + 703.78, toSeconds(['', '2:15', '4:37.75', '16:35', '', '3:00:43']), 21)
-print(spkane31)
-print(evan)
+spkane31 = athlete('spkane31', 'Male', 16000, (['54.0', '1:59.2', '4:31', '15:52', '1:12:50', '2:32:26']), 21)
+evan = athlete('evansergent', 'Male', 159.18 + 2992.52 + 3273.65 + 703.78, (['', '2:15', '4:37.75', '16:35', '', '3:00:43']), 21)
+# print(spkane31);
+# print(evan)
 
 runners = []
 runners.append(spkane31)
