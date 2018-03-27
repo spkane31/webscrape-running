@@ -9,7 +9,7 @@ kanesp@mail.uc.edu
 
 This project is currently being worked on...
 
-##r2w.py
+## r2w.py
 * Logs in to Running2win.com
 * Gathers user info 
     * age
@@ -19,7 +19,7 @@ This project is currently being worked on...
     * personal bests
 
 
-##athlete.py
+## athlete.py
 * class file for each scraped athlete
 * Hold information like:
     * age
@@ -41,8 +41,8 @@ This project is currently being worked on...
 * Removes data deemed "unrealistic" or "outlier"
 
 
-##plot.py
+## plot.py
 * Plots user data
 
-##Dataset.txt
+## Dataset.txt
 * File that contains usernames for each of the data points
