@@ -29,11 +29,11 @@ This project is currently being worked on...
     * personal bests
 * Checks to see if personal bests are reasonable
 * ie:
-    * > 1:41 in the 800
-    * > 3:50 in the mile
-    * > 13:30 in the 5000
-    * > :59:00 in the half
-    * > 2:05:00 in the full marathon
+    * 1:41 in the 800
+    * 3:50 in the mile
+    * 13:30 in the 5000
+    * :59:00 in the half
+    * 2:05:00 in the full marathon
 * Checks to see if mileage is realistic:
     * Running very low (> 3 miles/day) and very fast
     * Running very high mileage overa  long period of time ( < 120 miles/wk over years
