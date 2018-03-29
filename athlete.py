@@ -1,29 +1,11 @@
+# CS2021 Final Project Spring Semester 2018
+
 # Code written by Sean P. Kane
 # Contact information kanesp@mail.uc.edu
 # Code written in collaboration with Jake Carlson
 # Jake put your e-mail here
+
 import numpy as np
-mileage = []
-fiveK = []
-
-# def toSeconds(lst):
-    
-#     hour, minutes, sec = 0, 0, 0
-#     times = []
-#     for r in lst:
-#         r = r.split(":")
-#         if len(r) == 3:
-#             hour, minutes, sec = float(r[0]), float(r[1]), float(r[2])
-#         if len(r) == 2 and r[0] != '':
-#             minutes, sec = float(r[0]), float(r[1])
-#         if len(r) == 1:
-#             sec = float(r[0])
-#         if r[0] == '' and r[1] != '':
-#             sec = float(r[1])
-        
-
-#         # times.append(hour * 3600 + min * 60 + sec)
-#     return(times)
        
 # -----------------------------------------------------------------------------------------------------------------------------------
 # Class for an athlete after information is scraped from their pages
@@ -34,13 +16,21 @@ class athlete():
         self.age = age
         self.gender = gender
         self.miles = totalMiles
-        self.PRs = PRs
+        self.prs = PRs
+
+    '''
+        TRY to implement this class as an iterable class to allow for use in for loops
+    '''
+
+    # def __next__(self):
+
+    # def __iter__(self):
 
     def __rep__(self):
         return "athlete()"
     
     def __str__(self):
-        return "Name: %s \t Gender: %s \t Total Miles: %s \t PRs: %s \t Age: %s" %(self.name, self.gender, self.miles, self.PRs, self.age)
+        return "Name: %s \t Gender: %s \t Total Miles: %s \t PRs: %s \t Age: %s" %(self.name, self.gender, self.miles, self.prs, self.age)
     
     def convertToSeconds(self, str):
         s = (str.split(":"))
@@ -50,37 +40,41 @@ class athlete():
             time += 60 * num[i]
         return (time)    
 
-    # def addToData(self):
-    #     mileage.append(self.miles)
-    #     print(mileage)
-    #     fiveK.append(self.PRs[3])
-    #     print(fiveK)
 
 
 
-def addToData(a):
-        mileage.append(a.miles)
-        fiveK.append(a.PRs[3])
-
-
+# -------------------------------------------------------------------------------------
+# Athlete class test cases
 spkane31 = athlete('spkane31', 'Male', 16000, (['54.0', '1:59.2', '4:31', '15:52', '1:12:50', '2:32:26']), 21)
 evan = athlete('evansergent', 'Male', 159.18 + 2992.52 + 3273.65 + 703.78, (['', '2:15', '4:37.75', '16:35', '', '3:00:43']), 21)
-# print(spkane31);
-# print(evan)
 
 runners = []
 runners.append(spkane31)
 runners.append(evan)
-# print(runners)
-[addToData(r) for r in runners]
-# print(mileage)
-# print(fiveK)
-# print(np.mean(mileage), np.std(mileage))
-# print(np.mean(fiveK), np.std(fiveK))
 
+# [addToData(r) for r in runners]
 
+# -----------------------------------------------------------------------------
+# Functions to convert a list of strings of pbs to a list of floating point numbers
 pbs = [':54', '1:59.2', '4:31', '15:52', '1:12:50', '2:32:26']
 
+def strToSeconds(str):
+    time = 0
+    s = str.split(":")
 
+    num = []
+    for i in s:
+        if i == '':
+            num.append(0)
+            
+        else:
+            num += [float(i)]
 
-# print(toSeconds(pbs))
+    for i in num:
+        time *= 60
+        time += i
+
+    return time
+
+for p in pbs:
+    print(strToSeconds(p))
