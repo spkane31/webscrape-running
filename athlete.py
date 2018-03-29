@@ -72,7 +72,7 @@ def strToSeconds(str):
 
     for i in num:
         time *= 60
-        time += i
+        time = time + 1
 
     return time
 
