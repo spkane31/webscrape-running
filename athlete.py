@@ -76,5 +76,5 @@ def strToSeconds(str):
 
     return time
 
-for p in pbs:
-    print(strToSeconds(p))
+# for p in pbs:
+#     print(strToSeconds(p))
