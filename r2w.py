@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 import requests
 import protectedInfo
 import athlete
+import time
+start_time = time.time()
 
 USERNAME = 'spkane31'
 PASSWORD = 'jakeisnofun'
@@ -43,25 +45,50 @@ def main():
         'btnLogin': 'Login'
     })
 
-    # Below link will scrape the users Running Log and return all runs displayed in format ['mileage', 'distance', 'pace']
+    # Link to users running log for last month
     r = s.get('http://www.running2win.com/community/view-member-running-log.asp')
 
-    # Below is the link to the my Running2Win User Information page
+    # Link to my Running2Win User Information page
     r = s.get('http://www.running2win.com/community/view-member-profile.asp?vu=Spkane31')
 
-    userAge, userLifetime = scrapeAgeUser(r)
+    userAge = scrapeAgeUser(r)
+    userLife = userLifetime(r)
 
     print('User Age:', userAge)
-    print('User Lifetime:', userLifetime)
+    print('User Lifetime:', userLife)
 
-    # r2wScrapeUserInfo(r)    
+    print("---- %s seconds ----" % (time.time() - start_time))
+
     # print(r.status_code) # A status code of 200 indicates the page was downloaded correctly (used for debugging purposes, probably can delete)
 
 # -----------------------------------------------------------------------------------------------------------------------------------
-# Scrape for age and days user
+# Scrape for length of time user has been a member
+def userLifetime(r):
+
+    lifetime = 0
+
+    soup = BeautifulSoup(r.content, 'html.parser')
+    details = soup.find_all('tr')
+    lifetimeTag = str(details[22])
+
+    lifetimeStr = []
+
+    for l in lifetimeTag:
+        if l in '0123456789,':
+            lifetimeStr.append(l)
+    lifetimeStr = lifetimeStr[3:]
+
+    for l in lifetimeStr:
+        if l != ',':
+            lifetime = lifetime * 10 + int(l)
+    print(lifetime)
+    return lifetime
+
+# -----------------------------------------------------------------------------------------------------------------------------------
+# Scrape for user age
 def scrapeAgeUser(r):
 
-    age, lifetime = 0, 0
+    age = 0
 
     soup = BeautifulSoup(r.content, 'html.parser')
 
@@ -69,53 +96,19 @@ def scrapeAgeUser(r):
 
     userDetails = [d.get_text() for d in details]
     nextAge = False
-    nextUserLifetime = False
     for u in userDetails:
         if nextAge:
             try:
                 age = int(u)
             except:
                 age = 0
-        if nextUserLifetime:
-            try:
-                print(int(u), 'lifetime')
-                lifetime = int(u)
-            except:
-                lifetime = 0
 
         nextAge = False
-        nextUserLifetime = False
 
         if 'Current Age' in u:
             nextAge = True
-        if 'Number of days' in u:
-            nextUserLifetime = True
 
-    return age, lifetime
-
-    # nextAge = False
-    # nextLifetime = False
-    # for u in userDetails:
-
-    #     if nextAge:
-    #         print('User Age', u)
-    #         userAge = int(u)
-    #     if nextLifetime:
-    #         print('User Lifetime', u)
-    #         userLifetime = int(u)
-
-    #     nextAge = False
-    #     nextLifetime = False
-
-    #     if 'days' in u:
-    #         nextLifetime = True
-    #         print(u)
-    #     if 'Current Age' in u:
-    #         nextAge = True
-    #         print(u)
-
-        
-
+    return age
 
 # -----------------------------------------------------------------------------------------------------------------------------------
 # Scrape Home Page for Lifetime (Logged) Mileage
