@@ -18,13 +18,6 @@ class athlete():
         self.miles = totalMiles
         self.prs = PRs
 
-    '''
-        TRY to implement this class as an iterable class to allow for use in for loops
-    '''
-
-    # def __next__(self):
-
-    # def __iter__(self):
 
     def __rep__(self):
         return "athlete()"
