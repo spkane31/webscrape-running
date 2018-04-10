@@ -32,9 +32,10 @@ class r2wScraper(object):
         self.URL_RACES = "http://running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s"  % self.username #Change to be personal to each user
         self.URL_PRS = "http://running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s" % self.username
         self.age = scrapeAgeUser(username)
+        self.gender = scrapeGenderUser(username)
         self.accountAge = userLifetime(username)
         # self.loggedMiles = r2wScrapeUserInfo(username)
-        # self.milesRun = 
+        # self.milesRun =
 
     def storeAccount(self):
         download_dir = 'r2wData.csv'
@@ -61,7 +62,7 @@ def main():
 
     # Link to my Running2Win User Information page
 
-    users = ['hoffmanmax96']
+    users = ['Spkane31','becki','Hoya']
 
     for u in users:
 
@@ -72,7 +73,9 @@ def main():
         print('Account:', account.username)
         print("Miles Logged:", r2wScrapeUserInfo(r))
         print('Age:',account.age)
+        print('Gender: ', account.gender)
         print('Account Age:', account.accountAge)
+
 
         r = s.get('http://www.running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s' % account.username)
         pbs = personalBests(account.username, r)
@@ -135,6 +138,32 @@ def scrapeAgeUser(user):
     return age
 
 # -----------------------------------------------------------------------------------------------------------------------------------
+# Scrape for user age
+def scrapeGenderUser(user):
+
+    r = s.get('http://www.running2win.com/community/view-member-profile.asp?vu=%s' % user)
+
+    gender = "Male"
+
+    soup = BeautifulSoup(r.content, 'html.parser')
+
+    details = soup.find(text=" Male ")
+
+
+    i = 0
+
+    if not details:
+        gender = "Female"
+    # for u in details:
+    #     if 'Female' in u:
+    #           gender = "Female"
+    #
+    #
+    #     i += 1
+
+    return gender
+
+# -----------------------------------------------------------------------------------------------------------------------------------
 # Scrape Home Page for Lifetime (Logged) Mileage
 def r2wScrapeUserInfo(r):
 
@@ -155,7 +184,7 @@ def r2wScrapeUserInfo(r):
         d = d.split(' - ')
         milesColumn = d[2]
         milesFloat = []
-        
+
         for m in milesColumn:
             if m in validNumbers:
                 milesFloat.append(m)
@@ -170,7 +199,7 @@ def personalBests(user, r):
     # r = s.get('http://www.running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s' % user)
     soup = BeautifulSoup(r.content, 'html.parser')
     raceDistances = soup.find_all("div", class_="row")#, class_="col-md-12 race col-md-3")
-   
+
     userRaces = [r.get_text() for r in raceDistances]
 
     i = 0
@@ -178,34 +207,27 @@ def personalBests(user, r):
     # print(type(userRaces))
     for u in userRaces:
         if '800 Meters' in u:
-            e = userRaces[i+1].split()
-            eight = strToSeconds(e[0])
+            eight = strToSeconds(userRaces[i+1].split()[0])
         if '1500 Meters' in u:
-            e = userRaces[i+1].split()
-            fifteen = strToSeconds(e[0])
+            fifteen = strToSeconds(userRaces[i+1].split()[0])
         if '1600 Meters' in u:
-            s = userRaces[i+1].split()
-            sixteen = strToSeconds(s[0])
+            sixteen = strToSeconds(userRaces[i+1].split()[0])
         if '1 Mile' in u and 's' not in u:
-            e = userRaces[i+1].split()
-            mile = strToSeconds(e[0])
+            mile = strToSeconds(userRaces[i+1].split()[0])
         if '5 Kilometers' in u and '2' not in u and '1' not in u:
-            e = userRaces[i+1].split()
-            five = strToSeconds(e[0])
+            five = strToSeconds(userRaces[i+1].split()[0])
         if '13.1 Miles' in u:
-            s = userRaces[i+1].split()
-            half = strToSeconds(s[0])
+            half = strToSeconds(userRaces[i+1].split()[0])
         if '26.2 Miles' in u:
-            e = userRaces[i+1].split()
-            full = strToSeconds(e[0])
+            full = strToSeconds(userRaces[i+1].split()[0])
             break
 
-        i += 1    
+        i += 1
 
     mile = selectMilePR(fifteen, sixteen, mile)
     return [eight, mile, five, half, full]
 
-    
+
 
 
 
@@ -227,7 +249,7 @@ def list_to_dec(lst):
             result += int(l)
             result = result * 10
 
-    return result/(10 ** (decimals)) 
+    return result/(10 ** (decimals))
 
 # ---------------------------------------------------------------
 # Takes a string of a personal bests and converts it into seconds
@@ -239,10 +261,10 @@ def strToSeconds(str):
     for i in s:
         if i == '':
             num.append(0)
-            
+
         else:
             num += [float(i)]
-    for i in num:        
+    for i in num:
         time *= 60
         time = time + i
 
