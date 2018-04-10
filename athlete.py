@@ -11,8 +11,8 @@ import numpy as np
 # Class for an athlete after information is scraped from their pages
 class athlete():
 
-    def __init__(self, name, gender, totalMiles, PRs = [] * 6,  age = 0):
-        self.name = name
+    def __init__(self, username, gender, totalMiles, PRs = [] * 6,  age = 0):
+        self.username = username
         self.age = age
         self.gender = gender
         self.miles = totalMiles
@@ -23,7 +23,7 @@ class athlete():
         return "athlete()"
     
     def __str__(self):
-        return "Name: %s \t Gender: %s \t Total Miles: %s \t PRs: %s \t Age: %s" %(self.name, self.gender, self.miles, self.prs, self.age)
+        return "Name: %s \t Gender: %s \t Total Miles: %s \t PRs: %s \t Age: %s" %(self.username, self.gender, self.miles, self.prs, self.age)
     
     def convertToSeconds(self, str):
         s = (str.split(":"))
@@ -44,7 +44,6 @@ evan = athlete('evansergent', 'Male', 159.18 + 2992.52 + 3273.65 + 703.78, (['',
 runners = []
 runners.append(spkane31)
 runners.append(evan)
-
 # [addToData(r) for r in runners]
 
 # -----------------------------------------------------------------------------

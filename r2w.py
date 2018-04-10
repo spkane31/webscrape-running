@@ -36,14 +36,7 @@ class r2wScraper(object):
         # self.loggedMiles = r2wScrapeUserInfo(username)
         # self.milesRun = 
 
-    def storeAccount(self):
-        download_dir = 'r2wData.csv'
-        csv = open(download_dir, "w")
-
-        columnTitleRow = "Account, age, accountAge\n"
-        csv.write(columnTitleRow)
-        # row = self.username + "," + str(self.age) + "," + str(self.accountAge) + "\n"
-        csv.write(row)
+    
 
 
 # -----------------------------------------------------------------------------------------------------------------------------------
@@ -135,6 +128,32 @@ def scrapeAgeUser(user):
     return age
 
 # -----------------------------------------------------------------------------------------------------------------------------------
+# Scrape for user age
+def scrapeGenderUser(user):
+
+    r = s.get('http://www.running2win.com/community/view-member-profile.asp?vu=%s' % user)
+
+    gender = "Male"
+
+    soup = BeautifulSoup(r.content, 'html.parser')
+
+    details = soup.find(text=" Male ")
+
+
+    i = 0
+
+    if not details:
+        gender = "Female"
+    # for u in details:
+    #     if 'Female' in u:
+    #           gender = "Female"
+    #
+    #
+    #     i += 1
+
+return gender
+
+# -----------------------------------------------------------------------------------------------------------------------------------
 # Scrape Home Page for Lifetime (Logged) Mileage
 def r2wScrapeUserInfo(r):
 
@@ -206,10 +225,6 @@ def personalBests(user, r):
     return [eight, mile, five, half, full]
 
     
-
-
-
-
 # ---------------------------------------------------------------
 # This function would take a list, ['1', '2', '3', '.', '4'] and return 123.4 in a float
 def list_to_dec(lst):
