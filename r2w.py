@@ -23,23 +23,6 @@ MEMBER_RACES = 'http://www.running2win.com/community/AllUserRacesNew.asp?k=0&vu=
 
 s = requests.session()
 
-class r2wScraper(object):
-    # BASE_URL = 'http://running2win.com/'
-
-    def __init__ (self, username):
-        self.username = username
-        self.URL_PROFILE = "http://running2win.com/community/view-member-profile.asp?vu=%s"  % self.username #Change to be personal to each user
-        self.URL_RACES = "http://running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s"  % self.username #Change to be personal to each user
-        self.URL_PRS = "http://running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s" % self.username
-        self.age = scrapeAgeUser(username)
-        self.gender = scrapeGenderUser(username)
-        self.accountAge = userLifetime(username)
-        # self.loggedMiles = r2wScrapeUserInfo(username)
-        # self.milesRun =
-
-    
-
-
 # -----------------------------------------------------------------------------------------------------------------------------------
 # Main method to login to R2w
 def main():
@@ -53,31 +36,23 @@ def main():
         'btnLogin': 'Login'
     })
 
-    # Link to my Running2Win User Information page
-
-    users = ['Spkane31','becki','Hoya']
+    users = ['Spkane31', 'Thunder_Strohm', 'Tstoverink', 'vmclach', 'Jesspascoe', 'parrell26', 'runsofwrath', 'nolandozier', 'aiabilly', 'spolzin']
 
     for u in users:
 
-        account = r2wScraper(u)
+        account = athlete.athlete(u)
 
         r = s.get('http://www.running2win.com/community/view-member-running-log.asp?vu=%s' % account.username)
-
-        print('Account:', account.username)
-        print("Miles Logged:", r2wScrapeUserInfo(r))
-        print('Age:',account.age)
-        print('Gender: ', account.gender)
-        print('Account Age:', account.accountAge)
-
+        account.miles = r2wScrapeUserInfo(r)
 
         r = s.get('http://www.running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s' % account.username)
-        pbs = personalBests(account.username, r)
-        print('PBs:', pbs)
+        account.prs = personalBests(account.username, r)
+
+        print(account)
 
     print("---- %s seconds ----" % (time.time() - start_time))
 
-    # print(r.status_code) # A status code of 200 indicates the page was downloaded correctly (used for debugging purposes, probably can delete)
-
+   
 # -----------------------------------------------------------------------------------------------------------------------------------
 # Scrape for length of time user has been a member
 def userLifetime(user):
@@ -131,28 +106,16 @@ def scrapeAgeUser(user):
     return age
 
 # -----------------------------------------------------------------------------------------------------------------------------------
-# Scrape for user age
+# Scrape for user gender
 def scrapeGenderUser(user):
-
     r = s.get('http://www.running2win.com/community/view-member-profile.asp?vu=%s' % user)
+    soup = BeautifulSoup(r.content, 'html.parser')
+    details = soup.find(text=" Male ")
 
     gender = "Male"
 
-    soup = BeautifulSoup(r.content, 'html.parser')
-
-    details = soup.find(text=" Male ")
-
-
-    i = 0
-
     if not details:
         gender = "Female"
-    # for u in details:
-    #     if 'Female' in u:
-    #           gender = "Female"
-    #
-    #
-    #     i += 1
     return gender
 
 # -----------------------------------------------------------------------------------------------------------------------------------
@@ -182,7 +145,7 @@ def r2wScrapeUserInfo(r):
                 milesFloat.append(m)
 
         totalMiles += (list_to_dec(milesFloat))
-    return(totalMiles)
+    return round(totalMiles, 2)
 
 def personalBests(user, r):
 
@@ -219,15 +182,7 @@ def personalBests(user, r):
     mile = selectMilePR(fifteen, sixteen, mile)
     return [eight, mile, five, half, full]
 
-<<<<<<< HEAD
     
-=======
-
-
-
-
-
->>>>>>> 1dcdfc96870d8c2db0035b80a402749cc6552d30
 # ---------------------------------------------------------------
 # This function would take a list, ['1', '2', '3', '.', '4'] and return 123.4 in a float
 def list_to_dec(lst):
@@ -281,7 +236,11 @@ def selectMilePR(fifteen, sixteen, mile):
 
     select = [fifteenToMile, sixteenToMile, mile]
 
-    return round(min(select), 2)
+    result = round(min(select), 2)
+    if result == 99999:
+        result = 0
+
+    return result
 
 
 # -----------------------------------------------------------------------------------------------------------------------------------

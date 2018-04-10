@@ -6,24 +6,29 @@
 # Jake put your e-mail here
 
 import numpy as np
-       
+import r2w
+
 # -----------------------------------------------------------------------------------------------------------------------------------
 # Class for an athlete after information is scraped from their pages
 class athlete():
 
-    def __init__(self, username, gender, totalMiles, PRs = [] * 6,  age = 0):
+    def __init__(self, username): #, gender, totalMiles, PRs = [] * 6,  age = 0):
         self.username = username
-        self.age = age
-        self.gender = gender
-        self.miles = totalMiles
-        self.prs = PRs
+        self.URL_PROFILE = "http://running2win.com/community/view-member-profile.asp?vu=%s"  % self.username #Change to be personal to each user
+        self.URL_RACES = "http://running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s"  % self.username #Change to be personal to each user
+        self.URL_PRS = "http://running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s" % self.username
+        self.age = r2w.scrapeAgeUser(username)
+        self.gender = r2w.scrapeGenderUser(username)
+        self.accountAge = r2w.userLifetime(username)
+        self.miles = 0
+        self.prs = []
 
 
     def __rep__(self):
         return "athlete()"
     
     def __str__(self):
-        return "Name: %s \t Gender: %s \t Total Miles: %s \t PRs: %s \t Age: %s" %(self.username, self.gender, self.miles, self.prs, self.age)
+        return "Name: %s \t Gender: %s \t Total Miles: %s \t PRs: %s \t Age: %s \t Account Lifetime: %s" %(self.username, self.gender, self.miles, self.prs, self.age, self.accountAge)
     
     def convertToSeconds(self, str):
         s = (str.split(":"))
@@ -32,19 +37,6 @@ class athlete():
         for i in range(len(num)-1):
             time += 60 * num[i]
         return (time)    
-
-
-
-
-# -------------------------------------------------------------------------------------
-# Athlete class test cases
-spkane31 = athlete('spkane31', 'Male', 16000, (['54.0', '1:59.2', '4:31', '15:52', '1:12:50', '2:32:26']), 21)
-evan = athlete('evansergent', 'Male', 159.18 + 2992.52 + 3273.65 + 703.78, (['', '2:15', '4:37.75', '16:35', '', '3:00:43']), 21)
-
-runners = []
-runners.append(spkane31)
-runners.append(evan)
-# [addToData(r) for r in runners]
 
 # -----------------------------------------------------------------------------
 # Functions to convert a list of strings of pbs to a list of floating point numbers
