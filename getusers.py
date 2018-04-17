@@ -28,37 +28,43 @@ def main():
 
     r = s.get('http://www.running2win.com/community/dailyruns.asp')
     soup = BeautifulSoup(r.content, 'html.parser')
-    details = soup.find_all("td", {'align': 'left', 'valign': None}) #aligh_="left")
+    details = soup.find_all("td", {'align': 'left', 'valign': None}) 
     users = [d.get_text() for d in details]
+
+    # Remove users who have a space in their username, this creates problems when accessing their web address
+    # Also remove users who have logged more than one run in the last day
 
     for u in users:
         if (' ' in u) == True or 'Member' in u:
             users.remove(u)
-            print('REMOVED')
         elif u in writeToCSV:
             users.remove(u)
-            print('REMOVED')
-            pass
         else:
             writeToCSV.append(u)
 
-    print(len(users))
     storeAccount(writeToCSV)
 
-    print('Number of Users:', len(writeToCSV))
+    # print('Number of Users:', len(writeToCSV))
     print("---- %s seconds ----" % (time.time() - start_time))
         
 def storeAccount(usernames):
-    timeSearch = time.time()
-    download_dir = 'r2wUsers.csv' #r2wUsers%s.csv' % str(int(timeSearch))
-    csv = open(download_dir, "w")
+    import csv
+    download_dir = 'r2wUsers.csv' # 'r2wUsers%s.csv' % str(int(timeSearch))
+    csvFile = open(download_dir, 'a')
+    
+    with open("r2wUsers.csv", 'r') as in_file:
+        existingFile = list(csv.reader(in_file))
+    
+    existingUsernames = []
+    for e in existingFile:
+        existingUsernames += e
 
-    columnTitleRow = "username\n"
-    csv.write(columnTitleRow)
     for u in usernames:
-        csv.write(u + "\n")
-
-        
+        if (u in existingUsernames):
+            usernames.remove(u)
+        else:
+            csvFile.write(u + "\n")
+    csvFile.close()
 
 if __name__ == '__main__':
     main()

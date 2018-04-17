@@ -36,10 +36,23 @@ def main():
         'btnLogin': 'Login'
     })
 
-    users = ['Spkane31', 'Thunder_Strohm', 'Tstoverink', 'vmclach', 'Jesspascoe', 'parrell26', 'runsofwrath', 'nolandozier', 'aiabilly', 'spolzin']
+    import csv
+    download_dir = 'r2wUsers.csv'
+    csvFile = open(download_dir, 'a')
+
+    with open(download_dir, 'r') as in_file:
+        usernames = list(csv.reader(in_file))
+    
+    users = []
+    for u in usernames:
+        users += u
+
+    # print(users)
+
+    # users = ['Spkane31', 'Thunder_Strohm',] # 'Tstoverink', 'vmclach', 'Jesspascoe', 'parrell26', 'runsofwrath', 'nolandozier', 'aiabilly', 'spolzin']
 
     for u in users:
-
+        athleteTime = time.time()
         account = athlete.athlete(u)
 
         r = s.get('http://www.running2win.com/community/view-member-running-log.asp?vu=%s' % account.username)
@@ -48,11 +61,21 @@ def main():
         r = s.get('http://www.running2win.com/community/AllUserRacesNew.asp?k=0&vu=%s' % account.username)
         account.prs = personalBests(account.username, r)
 
-        print(account)
+        storeData(account)
+        # print(account)
+        print("---- %s seconds ----" % (time.time() - athleteTime))    
 
     print("---- %s seconds ----" % (time.time() - start_time))
 
    
+def storeData(user):
+    write_dir = 'r2wData.csv'
+    writeCSV = open(write_dir, 'a')
+    writeString = "%s,%s,%s,%s,%s,%s" %(user.username, user.gender, user.miles, user.prs, user.age, user.accountAge)
+    print(writeString)
+    writeCSV.write(writeString + "\n")
+    writeCSV.close()
+
 # -----------------------------------------------------------------------------------------------------------------------------------
 # Scrape for length of time user has been a member
 def userLifetime(user):
@@ -147,6 +170,8 @@ def r2wScrapeUserInfo(r):
         totalMiles += (list_to_dec(milesFloat))
     return round(totalMiles, 2)
 
+# -----------------------------------------------------------------------------------------------------------------------------------
+# Scrape Users race page for best times in the 800, 1500/1600/Mile, 5k, half-marathon, and marathon. Returns as a list.
 def personalBests(user, r):
 
     eight, fifteen, sixteen, mile, five, half, full = 0, 0, 0, 0, 0, 0, 0
@@ -158,22 +183,20 @@ def personalBests(user, r):
     userRaces = [r.get_text() for r in raceDistances]
 
     i = 0
-    # print(userRaces[i])
-    # print(type(userRaces))
     for u in userRaces:
         if '800 Meters' in u:
             eight = strToSeconds(userRaces[i+1].split()[0])
-        if '1500 Meters' in u:
+        elif '1500 Meters' in u:
             fifteen = strToSeconds(userRaces[i+1].split()[0])
-        if '1600 Meters' in u:
+        elif '1600 Meters' in u:
             sixteen = strToSeconds(userRaces[i+1].split()[0])
-        if '1 Mile' in u and 's' not in u:
+        elif '1 Mile' in u and 's' not in u:
             mile = strToSeconds(userRaces[i+1].split()[0])
-        if '5 Kilometers' in u and '2' not in u and '1' not in u:
+        elif '5 Kilometers' in u and '2' not in u and '1' not in u:
             five = strToSeconds(userRaces[i+1].split()[0])
-        if '13.1 Miles' in u:
+        elif '13.1 Miles' in u:
             half = strToSeconds(userRaces[i+1].split()[0])
-        if '26.2 Miles' in u:
+        elif '26.2 Miles' in u:
             full = strToSeconds(userRaces[i+1].split()[0])
             break
 

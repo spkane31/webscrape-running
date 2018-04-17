@@ -30,6 +30,9 @@ class athlete():
     def __str__(self):
         return "Name: %s \t Gender: %s \t Total Miles: %s \t PRs: %s \t Age: %s \t Account Lifetime: %s" %(self.username, self.gender, self.miles, self.prs, self.age, self.accountAge)
     
+    def format(self):
+        return "Name: %s \t Gender: %s \t Total Miles: %s \t PRs: %s \t Age: %s \t Account Lifetime: %s" %(self.username, self.gender, self.miles, self.prs, self.age, self.accountAge)
+
     def convertToSeconds(self, str):
         s = (str.split(":"))
         num = [float(i) for i in s]
