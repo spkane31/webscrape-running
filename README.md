@@ -39,7 +39,7 @@ This project is currently being worked on...
 * Removes data deemed "unrealistic" or "outlier"
 
 ### getusers.py
-
+* Uses a part of r2w that tracks recently logged runs to grab active usernames. This will generate 500 usernames, but will only add original names to the r2wUsers.csv
 
 ### r2w.py
 * Logs in to Running2win.com
