@@ -9,18 +9,16 @@ kanesp@mail.uc.edu
 
 This project is currently being worked on...
 
-## r2w.py
-* Logs in to Running2win.com
-* Gathers user info 
-    * age
-    * gender
-    * total
-    * miles run
-    * personal bests
+## Python Files
+
+### analysis.py
+* Data analysis with statistics and matplotlib python libraries
+* Creates plots to show data for final report
 
 
-## athlete.py
+### athlete.py
 * class file for each scraped athlete
+
 * Hold information like:
     * age
     * gender
@@ -40,9 +38,29 @@ This project is currently being worked on...
     * Very young ( > 18) or old ( > 65) and running very high mileage
 * Removes data deemed "unrealistic" or "outlier"
 
+### getusers.py
 
-## plot.py
+
+### r2w.py
+* Logs in to Running2win.com
+* Gathers user info 
+    * age
+    * gender
+    * total
+    * miles run
+    * personal bests
+
+
+### plot.py
 * Plots user data
 
-## Dataset.txt
-* File that contains usernames for each of the data points
+## CSV Files
+
+### r2wData.csv
+* Data stored here in comma seperated list after each iteration of r2w.py. This file is overwritten each time the script is written.
+
+### r2wDataKeep.csv
+* Final data for analysis. We had issues with our script timing out, and therefore we manually migrated data to this file from r2wData.csv, and rerun r2w.py with new usernames
+
+### r2wUsers.csv
+* Each line is a recently active user who logged a run, this file is updated by getusers.py
