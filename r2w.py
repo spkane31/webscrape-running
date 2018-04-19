@@ -11,6 +11,7 @@ import requests
 import protectedInfo
 import athlete
 import time
+import os
 start_time = time.time()
 
 USERNAME = 'cs2021'
@@ -46,10 +47,11 @@ def main():
     users = []
     for u in usernames:
         users += u
-
-    # print(users)
-
-    # users = ['Spkane31', 'Thunder_Strohm',] # 'Tstoverink', 'vmclach', 'Jesspascoe', 'parrell26', 'runsofwrath', 'nolandozier', 'aiabilly', 'spolzin']
+    try:    
+        os.remove("r2wData.csv")
+    except:
+        pass
+    count = 0
 
     for u in users:
         athleteTime = time.time()
@@ -62,17 +64,29 @@ def main():
         account.prs = personalBests(account.username, r)
 
         storeData(account)
-        # print(account)
-        print("---- %s seconds ----" % (time.time() - athleteTime))    
+        count += 1
+        print(str(round(100 * count/len(users), 5)), '% complete')
+        print("---- %s seconds ----" % round(time.time() - athleteTime, 4))
 
-    print("---- %s seconds ----" % (time.time() - start_time))
+        totalTime = time.time() - start_time
+        print("Run Time: %02d:%02d:%02d" % (int(totalTime//3600), int(totalTime//60 % 60), (totalTime % 60)))
+
+        estimatedTime = (time.time() - start_time)*len(users)/count
+        print("Estimated Time: %02d:%02d:%02d" % (int(estimatedTime//3600), int(estimatedTime//60 % 60), (estimatedTime % 60)))
+        print('\n')
+
+    # print("---- %s seconds ----" % (time.time() - start_time))
 
    
 def storeData(user):
+    
+
     write_dir = 'r2wData.csv'
     writeCSV = open(write_dir, 'a')
-    writeString = "%s,%s,%s,%s,%s,%s" %(user.username, user.gender, user.miles, user.prs, user.age, user.accountAge)
-    print(writeString)
+    prs = user.prs
+    prString = str(prs[0]) + "," + str(prs[1]) + "," + str(prs[2]) + "," + str(prs[3]) + "," + str(prs[4])
+    writeString = "%s,%s,%s,%s,%s,%s" %(user.username, user.gender, user.miles, prString, user.age, user.accountAge)
+    # print(writeString)
     writeCSV.write(writeString + "\n")
     writeCSV.close()
 
