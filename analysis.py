@@ -50,7 +50,7 @@ for d in data:
 male = [1 for g in gender if g == 'Male']
 maleProportion = len(male)/len(gender)
 femaleProportion = 1 - maleProportion
-print(round(100 * maleProportion, 5), '% Male\t', round(100 * femaleProportion, 5), '% Female')
+print(round(100 * maleProportion, 2), '% Male\t', round(100 * femaleProportion, 2), '% Female')
 
 filteredAge = [a for a in age if a != 0]
 ageMean = statistics.mean(filteredAge)
@@ -83,16 +83,27 @@ print('Average Marathon: %s \tMarathon Standard Deviation: %s \tCount:' %(statsS
 # Plots age vs. mile time
 # Filters out all zero answers
 x = []
+x2 = []
+g =[]
 y = []
+y2 = []
+a = []
 
 for i in range(len(age)):
-    if age[i] == 0 or mile[i] == 0:
+    if age[i] == 0 or mile[i] < 200 or mile[i] > 600:
         pass
     else:
         x.append(age[i])
+        x2.append(totalMiles[i])
+        g.append(gender[i])
         y.append(mile[i])
+        y2.append(marathon[i])
+        a.append(accountLifetime[i])
 
-# plt.scatter(x, y)
-# plt.show()
+plt.scatter(x2, y)
+plt.title('Total Miles vs Mile Personal Best')
+plt.xlabel('Total Miles')
+plt.ylabel('Mile Personal Best (seconds)')
+plt.show()
 
 print("---- %s seconds ----" % round(time.time() - start_time, 4))
